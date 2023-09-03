@@ -14,6 +14,7 @@ const AppError = require("./utils/appError");
 const path = require("path");
 const passport = require("passport");
 const session = require("express-session");
+const proxy = require("proxy-addr");
 
 const app = express();
 
@@ -21,7 +22,10 @@ const app = express();
 app.use(helmet());
 
 // Use the trust proxy setting to enable processing of X-Forwarded-For header
-app.set("trust proxy", true);
+app.set("trust proxy", ["loopback", "linklocal", "uniquelocal"]);
+
+// Configure proxy handling with desired options
+app.set("trust proxy", proxy.compile(["loopback", "linklocal", "uniquelocal"]));
 
 //See Request Data in console
 if (process.env.NODE_ENV === "development") {
