@@ -20,6 +20,9 @@ const app = express();
 //Using helmet package(set special security headers) against Xss attacks
 app.use(helmet());
 
+// Use the trust proxy setting to enable processing of X-Forwarded-For header
+app.set("trust proxy", true);
+
 //See Request Data in console
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -46,6 +49,12 @@ app.use(xss());
 
 //Preventing Parameter pollution
 app.use(hpp({ whitelist: ["toilets", "bedrooms", "baths", "price"] }));
+
+//Access clients Ip address
+app.get("/", (req, res) => {
+  const clientIP = req.ip;
+  res.send(`Client IP Address: ${clientIP}`);
+});
 
 //Mount the Router
 app.use("/api/v1/properties", propertyRouter);
