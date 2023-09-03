@@ -25,18 +25,6 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-app.use(passport.initialize());
-//app.use(passport.session());
-app.set("trust proxy", 1); // trust first proxy
-app.use(
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true },
-  })
-);
-
 //Implementing rate limit
 const limiter = rateLimit({
   max: 100,
@@ -58,21 +46,6 @@ app.use(xss());
 
 //Preventing Parameter pollution
 app.use(hpp({ whitelist: ["toilets", "bedrooms", "baths", "price"] }));
-
-app.get(
-  "/google,",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
-);
-
-app.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/failed" }),
-  (req, res) => {
-    res.send("/success");
-  }
-);
 
 //Mount the Router
 app.use("/api/v1/properties", propertyRouter);
