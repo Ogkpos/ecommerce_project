@@ -15,11 +15,22 @@ const path = require("path");
 const passport = require("passport");
 const session = require("express-session");
 const proxy = require("proxy-addr");
+const cors = require("cors");
 
 const app = express();
 
 //Using helmet package(set special security headers) against Xss attacks
 app.use(helmet());
+
+// Enable CORS for all requests
+app.use(cors());
+
+const allowedOrigins = ["http://localhost:3000"];
+app.use(
+  cors({
+    origin: allowedOrigins,
+  })
+);
 
 // Use the trust proxy setting to enable processing of X-Forwarded-For header
 app.set("trust proxy", ["loopback", "linklocal", "uniquelocal"]);
